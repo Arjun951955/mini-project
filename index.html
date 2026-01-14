@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFlow - Professional Student Portal</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --math: #ff7675;
+            --science: #55efc4;
+            --arts: #a29bfe;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* --- PAGE CONTROL LOGIC --- */
+        input[name="main-nav"] { display: none !important; }
+        
+        /* Ensure all pages are hidden by default */
+        .page { 
+            display: none; 
+            min-height: 80vh; 
+            animation: fadeIn 0.5s ease forwards;
+            padding-bottom: 50px;
+        }
+
+        /* Show page when radio is checked */
+        #home-opt:checked ~ #home-page,
+        #schedule-opt:checked ~ #schedule-page,
+        #gallery-opt:checked ~ #gallery-page,
+        #about-opt:checked ~ #about-page,
+        #contact-opt:checked ~ #contact-page { 
+            display: block !important; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            height: 80px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+
+        .nav-links { display: flex; gap: 15px; }
+
+        .nav-links label {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark);
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-links label:hover { background: #f0f7ff; color: var(--primary); }
+
+        /* Highlight active link */
+        #home-opt:checked ~ nav label[for="home-opt"],
+        #schedule-opt:checked ~ nav label[for="schedule-opt"],
+        #gallery-opt:checked ~ nav label[for="gallery-opt"],
+        #about-opt:checked ~ nav label[for="about-opt"],
+        #contact-opt:checked ~ nav label[for="contact-opt"] {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero h1 { font-size: 3.5rem; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.2rem; max-width: 600px; }
+
+        /* --- SCHEDULE FILTER --- */
+        input[name="filter"] { display: none !important; }
+        .filter-nav { margin: 30px 0; display: flex; gap: 10px; justify-content: center; }
+        .filter-label {
+            padding: 10px 20px; background: var(--white); border: 2px solid #eee;
+            border-radius: 30px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: 0.3s;
+        }
+
+        #all-f:checked ~ .filter-nav label[for="all-f"] { background: var(--primary); color: white; border-color: var(--primary); }
+        #math-f:checked ~ .filter-nav label[for="math-f"] { background: var(--math); color: white; border-color: var(--math); }
+        #science-f:checked ~ .filter-nav label[for="science-f"] { background: var(--science); color: white; border-color: var(--science); }
+        #arts-f:checked ~ .filter-nav label[for="arts-f"] { background: var(--arts); color: white; border-color: var(--arts); }
+
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 0 5%; }
+        .card { background: white; padding: 25px; border-radius: 15px; border-top: 5px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        .cat-math { border-top-color: var(--math); }
+        .cat-science { border-top-color: var(--science); }
+        .cat-arts { border-top-color: var(--arts); }
+
+        #math-f:checked ~ .schedule-grid .card:not(.cat-math),
+        #science-f:checked ~ .schedule-grid .card:not(.cat-science),
+        #arts-f:checked ~ .schedule-grid .card:not(.cat-arts) { display: none; }
+
+        /* --- GALLERY --- */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px 5%; }
+        .gallery-item { overflow: hidden; border-radius: 15px; height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            margin-top: 0;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px; }
+
+        .contact-form { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; transition: 0.3s; }
+        .btn:hover { background: #357abd; }
+
+    </style>
+</head>
+<body>
+
+    <input type="radio" name="main-nav" id="home-opt" checked>
+    <input type="radio" name="main-nav" id="schedule-opt">
+    <input type="radio" name="main-nav" id="gallery-opt">
+    <input type="radio" name="main-nav" id="about-opt">
+    <input type="radio" name="main-nav" id="contact-opt">
+
+    <nav>
+        <div class="logo">EduFlow</div>
+        <div class="nav-links">
+            <label for="home-opt">Home</label>
+            <label for="schedule-opt">Schedule</label>
+            <label for="gallery-opt">Campus</label>
+            <label for="about-opt">About</label>
+            <label for="contact-opt">Contact</label>
+        </div>
+    </nav>
+
+    <section class="page" id="home-page">
+        <div class="hero">
+            <h1>Shape Your Future</h1>
+            <p>Access your classes, campus resources, and schedule in one beautiful, organized place.</p>
+        </div>
+        <div class="container" style="text-align: center;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Your Journey Starts Here</h2>
+            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto 40px;">EduFlow is a student-first platform designed to simplify academic life. Track your progress, manage your time, and stay connected.</p>
+            <img src="https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Student Life" style="width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+        </div>
+    </section>
+
+    <section class="page" id="schedule-page">
+        <div class="container" style="text-align: center;">
+            <h1>Weekly Academic Timetable</h1>
+            
+            <input type="radio" name="filter" id="all-f" checked>
+            <input type="radio" name="filter" id="math-f">
+            <input type="radio" name="filter" id="science-f">
+            <input type="radio" name="filter" id="arts-f">
+
+            <div class="filter-nav">
+                <label for="all-f" class="filter-label">All Classes</label>
+                <label for="math-f" class="filter-label">Mathematics</label>
+                <label for="science-f" class="filter-label">Science</label>
+                <label for="arts-f" class="filter-label">Fine Arts</label>
+            </div>
+
+            <div class="schedule-grid">
+                <div class="card cat-math"><h3>Calculus I</h3><p>Mon & Wed | 09:00 AM</p><p>Hall A</p></div>
+                <div class="card cat-science"><h3>Chemistry Lab</h3><p>Tue & Thu | 11:00 AM</p><p>Lab 302</p></div>
+                <div class="card cat-arts"><h3>Digital Arts</h3><p>Friday | 01:00 PM</p><p>Studio 1</p></div>
+                <div class="card cat-math"><h3>Statistics</h3><p>Mon & Wed | 02:00 PM</p><p>Hall C</p></div>
+                <div class="card cat-science"><h3>Physics II</h3><p>Tuesday | 09:00 AM</p><p>Lab 101</p></div>
+                <div class="card cat-arts"><h3>Art History</h3><p>Thursday | 03:00 PM</p><p>Room 204</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="gallery-page">
+        <div class="container">
+            <h1 style="text-align: center; margin-bottom: 40px;">Campus Life Gallery</h1>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.pexels.com/photos/2041540/pexels-photo-2041540.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Library"></div>
+                <div class="gallery-item"><img src="https://images.pexels.com/photos/256417/pexels-photo-256417.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Auditorium"></div>
+                <div class="gallery-item"><img src="https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Study Space"></div>
+                <div class="gallery-item"><img src="https://images.pexels.com/photos/267586/pexels-photo-267586.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Books"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="about-page">
+        <div class="container" style="text-align: center;">
+            <h1 style="margin-bottom: 20px;">About Our Mission</h1>
+            <p style="font-size: 1.2rem; color: #555; line-height: 1.8;">EduFlow was founded to bridge the gap between complex university systems and the modern student's need for simplicity. Our portal ensures that every student has their class information right at their fingertips.</p>
+            <div style="display: flex; gap: 30px; margin-top: 50px; flex-wrap: wrap;">
+                <div style="flex: 1; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                    <h2 style="color: var(--primary);">24/7 Access</h2>
+                    <p>Access your timetable and resources from any device, anywhere in the world.</p>
+                </div>
+                <div style="flex: 1; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                    <h2 style="color: var(--primary);">Integrated Tools</h2>
+                    <p>Filter your classes and track your academic milestones with ease.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="contact-page">
+        <div class="container" style="text-align: center;">
+            <div class="contact-form">
+                <h1 style="margin-bottom: 30px;">Get in Touch</h1>
+                <div class="form-group"><label>Your Name</label><input type="text" placeholder="John Doe"></div>
+                <div class="form-group"><label>Student Email</label><input type="email" placeholder="john@university.edu"></div>
+                <div class="form-group"><label>How can we help?</label><textarea rows="5" placeholder="Your message..."></textarea></div>
+                <button class="btn">Send Message</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">EduFlow Student Systems</p>
+        <p>&copy; 2026 EduFlow University Portal. All Rights Reserved.</p>
+        <div style="margin-top: 20px; opacity: 0.6;">
+            <p>123 University Ave, Science City, SC 45678</p>
+        </div>
+    </footer>
+
+</body>
+</html>
